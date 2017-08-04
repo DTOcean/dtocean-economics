@@ -20,20 +20,10 @@
 Created on Thu Mar 05 16:16:39 2015
 Economic functions to be used within DTOcean tool
 
-List of functions:
-* item_total_cost: calculates the total cost for a item in the context of the 
-project. Simple multiplication for now, can later be expanded to take into 
-consideration sizing functions
-
-* present_value: calculates the prensent value of a cost or energy output, 
-assuming a discount rate and the year the cost (or the production) occurs
-
-* simple_lcoe: calulates the levelized cost of energy assuming the sum of all 
-discounted costs and the sum of all discounted energy outputs
-
 """
 
-def item_total_cost(quantity, unitary_cost):
+
+def get_item_total_cost(quantity, unitary_cost):
 
     """
     Function to calculate cost
@@ -47,7 +37,8 @@ def item_total_cost(quantity, unitary_cost):
     
     return cost
 
-def present_value(value, yr, dr):
+
+def get_present_value(value, yr, dr):
 
     """
     Function to calculate present value
@@ -60,5 +51,37 @@ def present_value(value, yr, dr):
     present_value = (value / ((1 + dr) ** yr))
     
     return present_value
+
+
+def get_discounted_cost(bill_of_materials, discount_rate):
+    
+    bill_of_materials['cost'] = get_present_value(
+                        get_item_total_cost(bill_of_materials['quantity'],
+                                            bill_of_materials['unitary_cost']),
+                        bill_of_materials['project_year'],
+                        discount_rate)
+                        
+    discounted_cost = bill_of_materials['cost'].sum(axis=0)
+    
+    return discounted_cost
+
+
+def get_discounted_energy(energy_output, discount_rate):
+
+    energy_output['discounted_energy'] = get_present_value(
+                                            energy_output['energy'],
+                                            energy_output['project_year'],
+                                            discount_rate)
+                                            
+    discounted_energy = energy_output['discounted_energy'].sum(axis=0)
+        
+    return discounted_energy
+
+
+def get_lcoe(discounted_cost, discounted_energy):
+    
+    lcoe = discounted_cost / discounted_energy
+    
+    return lcoe
 
 
