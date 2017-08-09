@@ -18,27 +18,83 @@
 """
 
 Created on Thu Mar 05 16:16:39 2015
-Economic functions to be used within DTOcean tool
+Functions to be used within DTOcean tool
 
 """
 
+import pandas as pd
 
-def get_item_total_cost(quantity, unitary_cost):
 
-    """
-    Function to calculate cost
-    Can be applied to one item only, or to a table containing quantities and 
-      unitary costs
-    if units and currencies don't match these should be converted before using
-      the cost function
-      """
+def get_combined_lcoe(lcoe_capex=None, lcoe_opex=None):
     
-    cost = quantity * unitary_cost
+    if lcoe_capex is None and lcoe_opex is None: return
     
-    return cost
+    lcoe = 0.        
+    
+    if lcoe_capex is not None:
+        lcoe += lcoe_capex
+        
+    if lcoe_opex is not None:
+        lcoe += lcoe_opex
+        
+    return lcoe
 
 
-def get_present_value(value, yr, dr):
+def get_discounted_cost(bill_of_materials, discount_rate):
+    
+    costs = bill_of_materials['quantity'] * bill_of_materials['unitary_cost']
+    
+    present_values = get_present_values(costs,
+                                        bill_of_materials['project_year'],
+                                        discount_rate)
+                        
+    discounted_cost = present_values.sum()
+    
+    return discounted_cost
+
+
+def get_discounted_energy(energy_output, discount_rate):
+
+    present_values = get_present_values(energy_output['energy'],
+                                        energy_output['project_year'],
+                                        discount_rate)
+                                            
+    discounted_energy = present_values.sum()
+        
+    return discounted_energy
+
+
+def get_lcoe(discounted_cost, discounted_energy):
+    
+    lcoe = float(discounted_cost) / discounted_energy
+    
+    return lcoe
+
+
+def get_phase_breakdown(bom):
+    
+    # Check for null phases
+    null_phases = pd.isnull(bom["phase"])
+    
+    # No breakdown available
+    if null_phases.all(): return None
+
+    # Replace any null phase values
+    bom.loc[pd.isnull(bom["phase"]), "phase"] = "Other"
+    
+    phase_groups = bom.groupby("phase")
+    
+    phase_breakdown = {}
+    
+    for phase_name, phase_bom in phase_groups:
+        
+        phase_cost = get_total_cost(phase_bom)
+        phase_breakdown[phase_name] = phase_cost
+        
+    return phase_breakdown
+
+
+def get_present_values(value, yr, dr):
 
     """
     Function to calculate present value
@@ -53,35 +109,17 @@ def get_present_value(value, yr, dr):
     return present_value
 
 
-def get_discounted_cost(bill_of_materials, discount_rate):
+def get_total_cost(bom):
     
-    bill_of_materials['cost'] = get_present_value(
-                        get_item_total_cost(bill_of_materials['quantity'],
-                                            bill_of_materials['unitary_cost']),
-                        bill_of_materials['project_year'],
-                        discount_rate)
-                        
-    discounted_cost = bill_of_materials['cost'].sum(axis=0)
+    result = (bom['unitary_cost'] * bom['quantity']).sum()
+                            
+    return result
+
+
+def get_total_energy(energy_record):
     
-    return discounted_cost
-
-
-def get_discounted_energy(energy_output, discount_rate):
-
-    energy_output['discounted_energy'] = get_present_value(
-                                            energy_output['energy'],
-                                            energy_output['project_year'],
-                                            discount_rate)
-                                            
-    discounted_energy = energy_output['discounted_energy'].sum(axis=0)
-        
-    return discounted_energy
-
-
-def get_lcoe(discounted_cost, discounted_energy):
-    
-    lcoe = discounted_cost / discounted_energy
-    
-    return lcoe
+    result = energy_record['energy'].sum()
+                            
+    return result
 
 
