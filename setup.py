@@ -7,6 +7,7 @@ from distutils.cmd import Command
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
+
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
 
@@ -24,7 +25,8 @@ class PyTest(TestCommand):
         import pytest
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
-        
+
+
 class CleanPyc(Command):
 
     description = 'clean *.pyc'
@@ -62,20 +64,23 @@ class CleanPyc(Command):
                     continue
                 yield os.path.join(root, fname)
 
+
 setup(name='dtocean-economics',
-      version='1.0.0',
+      version='1.1.dev0',
       description='Economics module for the DTOcean tools',
-      author=('Marta Silva, '
-              'Mathew Topper'),
-      author_email=('marta@wavec.org, '
-                    'damm_horse@yahoo.co.uk'),
+      author=('Mathew Topper, '
+              'Marta Silva'),
+      author_email=('damm_horse@yahoo.co.uk, '
+                    'marta@wavec.org'),
       license="GPLv3",
       packages=find_packages(),
       install_requires=[
-          'numpy',
           'pandas'
       ],
-      tests_require=['pytest'],
+      tests_require=[
+          'numpy',
+          'pytest'
+      ],
       cmdclass = {'test': PyTest,
                   'cleanpyc': CleanPyc,
                   },
