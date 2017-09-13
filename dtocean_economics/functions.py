@@ -26,47 +26,50 @@ import pandas as pd
 
 
 def get_combined_lcoe(lcoe_capex=None, lcoe_opex=None):
-    
-    if lcoe_capex is None and lcoe_opex is None: return
-    
-    lcoe = 0.        
-    
-    if lcoe_capex is not None:
-        lcoe += lcoe_capex
         
-    if lcoe_opex is not None:
-        lcoe += lcoe_opex
+    if lcoe_capex is not None and lcoe_opex is not None:
+        lcoe = lcoe_capex + lcoe_opex
+    elif lcoe_capex is not None:
+        lcoe = lcoe_capex
+    else:
+        lcoe = lcoe_opex
         
     return lcoe
 
 
-def get_discounted_cost(bill_of_materials, discount_rate):
+def costs_from_bom(bom):
     
-    costs = bill_of_materials['quantity'] * bill_of_materials['unitary_cost']
-    
-    present_values = get_present_values(costs,
-                                        bill_of_materials['project_year'],
-                                        discount_rate)
-                        
-    discounted_cost = present_values.sum()
-    
-    return discounted_cost
-
-
-def get_discounted_energy(energy_output, discount_rate):
-
-    present_values = get_present_values(energy_output['energy'],
-                                        energy_output['project_year'],
-                                        discount_rate)
-                                            
-    discounted_energy = present_values.sum()
+    costs = bom['quantity'] * bom['unitary_cost']
         
-    return discounted_energy
+    costs_dict = {"project_year": bom["project_year"].values,
+                  "costs": costs}
+    costs_df = pd.DataFrame(costs_dict)
+    
+    return costs_df
+
+
+def get_discounted_values(values_df, discount_rate):
+    
+    years = values_df['project_year']
+    values_df = values_df.set_index('project_year')
+
+    discounted_values = []
+    
+    for _, value_series in values_df.iteritems():
+    
+        present_values = get_present_values(value_series,
+                                            years,
+                                            discount_rate)
+                            
+        discounted_value = present_values.sum()
+        discounted_values.append(discounted_value)
+    
+    return pd.Series(discounted_values)
 
 
 def get_lcoe(discounted_cost, discounted_energy):
-    
-    lcoe = float(discounted_cost) / discounted_energy
+        
+    lcoe = discounted_cost.astype(float) / discounted_energy
     
     return lcoe
 
@@ -114,12 +117,3 @@ def get_total_cost(bom):
     result = (bom['unitary_cost'] * bom['quantity']).sum()
                             
     return result
-
-
-def get_total_energy(energy_record):
-    
-    result = energy_record['energy'].sum()
-                            
-    return result
-
-

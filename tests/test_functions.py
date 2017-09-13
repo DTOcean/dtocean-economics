@@ -10,13 +10,12 @@ import numpy as np
 import pandas as pd
 
 from dtocean_economics.functions import (get_combined_lcoe,
-                                         get_discounted_cost,
-                                         get_discounted_energy,
+                                         costs_from_bom,
+                                         get_discounted_values,
                                          get_lcoe,
                                          get_phase_breakdown,
                                          get_present_values,
-                                         get_total_cost,
-                                         get_total_energy)
+                                         get_total_cost)
 
 
 @pytest.mark.parametrize("capex, opex, expected", [
@@ -36,30 +35,19 @@ def test_get_combined_lcoe_capex(capex, opex, expected):
     (0.1, 173580.34),
     (0.2, 152801),
 ])
-def test_get_discounted_cost(bom, test_input, expected):
+def test_get_discounted_values(bom, test_input, expected):
 
-    result = get_discounted_cost(bom, test_input)
+    costs_df = costs_from_bom(bom)
+    result = get_discounted_values(costs_df, test_input)
 
-    assert np.isclose(result, expected)
-    
-
-@pytest.mark.parametrize("test_input, expected", [
-    (0., 33),
-    (0.1, 28.1818),
-    (0.2, 24.4444),
-])
-def test_get_discounted_energy(energy_record, test_input, expected):
-    
-    result = get_discounted_energy(energy_record, test_input)
-
-    assert np.isclose(result, expected)
+    assert np.isclose(result.iloc[0], expected)
     
     
 def test_get_lcoe():
     
-    result = get_lcoe(1, 10)
+    result = get_lcoe(np.array([1]), np.array([10]))
     
-    assert result == 0.1
+    assert np.isclose(result[0], 0.1)
     
     
 def test_get_phase_breakdown(bom):
@@ -93,17 +81,3 @@ def test_get_present_values(test_input, expected):
     result = get_present_values(value, year, test_input)
     
     assert np.isclose(result, expected).all()
-
-
-def test_get_total_cost(bom):
-    
-    result = get_total_cost(bom)
-    
-    assert result == 200031.
-
-
-def test_get_total_energy(energy_record):
-    
-    result = get_total_energy(energy_record)
-    
-    assert result == 33.

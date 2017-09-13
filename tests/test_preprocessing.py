@@ -12,8 +12,7 @@ import pandas as pd
 from dtocean_economics.preprocessing import (estimate_cost_per_power,
                                              estimate_energy,
                                              estimate_opex,
-                                             make_phase_bom,
-                                             make_energy_record)
+                                             make_phase_bom)
 
 
 def test_estimate_cost_per_power():
@@ -53,10 +52,8 @@ def test_estimate_opex_rated_power():
     year_one = df.loc[df['project_year'] == 0]
     other_years = df.loc[df['project_year'] != 0]
         
-    assert (pd.isnull(df["phase"])).all()
-    assert (df["quantity"] == 1).all()
-    assert (year_one["unitary_cost"] == 0.).all()
-    assert (other_years["unitary_cost"] == 100 * 1e3).all()
+    assert (year_one["costs"] == 0.).all()
+    assert (other_years["costs"] == 100 * 1e3).all()
     
     
 def test_estimate_opex_mttf():
@@ -68,10 +65,8 @@ def test_estimate_opex_mttf():
     year_one = df.loc[df['project_year'] == 0]
     other_years = df.loc[df['project_year'] != 0]
     
-    assert (pd.isnull(df["phase"])).all()
-    assert (df["quantity"] == 1).all()
-    assert (year_one["unitary_cost"] == 0.).all()
-    assert (other_years["unitary_cost"] == 1e3).all()
+    assert (year_one["costs"] == 0.).all()
+    assert (other_years["costs"] == 1e3).all()
     
     
 def test_estimate_opex_combined():
@@ -80,16 +75,13 @@ def test_estimate_opex_combined():
                        100,
                        1e3,
                        1e3,
-                       8766,
-                       "Test")
+                       8766)
     
     year_one = df.loc[df['project_year'] == 0]
     other_years = df.loc[df['project_year'] != 0]
         
-    assert (df["phase"] == "Test").all()
-    assert (df["quantity"] == 1).all()
-    assert (year_one["unitary_cost"] == 0.).all()
-    assert (other_years["unitary_cost"] == 100 * 1e3 + 1e3).all()
+    assert (year_one["costs"] == 0.).all()
+    assert (other_years["costs"] == 100 * 1e3 + 1e3).all()
 
 
 def test_make_phase_bom():
@@ -120,19 +112,3 @@ def test_make_phase_bom_phase_fail():
         make_phase_bom([0, 1, 2],
                        [10, 20, 30],
                        [0, 1])
-        
-
-def test_make_energy_record():
-    
-    df = make_energy_record([0, 100, 200],
-                            [0, 1, 2])
-
-    assert np.isclose(df["energy"], [0, 100, 200]).all()
-    assert np.isclose(df["project_year"], [0, 1, 2]).all()
-
-
-def test_make_energy_record_fail():
-
-    with pytest.raises(ValueError):
-        make_energy_record([0, 100, 200],
-                           [0, 1])

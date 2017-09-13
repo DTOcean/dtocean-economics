@@ -22,13 +22,12 @@ Main economic analysis used within DTOcean tool
 
 """
 
-from .functions import (get_combined_lcoe,
-                        get_discounted_cost,
-                        get_discounted_energy,
+from .functions import (costs_from_bom,
+                        get_combined_lcoe,
+                        get_discounted_values,
                         get_lcoe,
                         get_phase_breakdown,
-                        get_total_cost,
-                        get_total_energy)
+                        get_total_cost)
 
 
 def main(capex, opex, energy, discount_rate=0.):
@@ -42,9 +41,7 @@ def main(capex, opex, energy, discount_rate=0.):
               "CAPEX breakdown": None,
               "OPEX": None,
               "Discounted OPEX": None,
-              "OPEX breakdown": None,
               "Total cost": None,
-              "Total cost breakdown": None,
               "Energy": None,
               "Discounted Energy": None,
               "LCOE CAPEX": None,  
@@ -58,21 +55,21 @@ def main(capex, opex, energy, discount_rate=0.):
         
         breakdown = get_phase_breakdown(capex)
         total = get_total_cost(capex)
-        discounted = get_discounted_cost(capex, discount_rate)
+
+        costs_df = costs_from_bom(capex)
+        discounted = get_discounted_values(costs_df, discount_rate)
 
         if breakdown is not None: result["CAPEX breakdown"] = breakdown
             
         result["CAPEX"] = total
-        result["Discounted CAPEX"] = discounted
+        result["Discounted CAPEX"] = discounted.iloc[0]
     
     # OPEX
     if not opex.empty:
         
-        breakdown = get_phase_breakdown(opex)
-        total = get_total_cost(opex)
-        discounted = get_discounted_cost(opex, discount_rate)
-
-        if breakdown is not None: result["OPEX breakdown"] = breakdown
+        opex_by_year = opex.set_index('project_year')
+        total = opex_by_year.sum()
+        discounted = get_discounted_values(opex, discount_rate)
             
         result["OPEX"] = total
         result["Discounted OPEX"] = discounted
@@ -81,20 +78,16 @@ def main(capex, opex, energy, discount_rate=0.):
     if (result["CAPEX"] is not None and 
         result["OPEX"] is not None):
         
-        cost_breakdown = {"CAPEX": result["CAPEX"],
-                          "OPEX": result["OPEX"]}
-        
-        result["Total cost"] = result["CAPEX"] + result["OPEX"]
-        result["Total cost breakdown"] = cost_breakdown
-                          
+        result["Total cost"] = result["OPEX"] + result["CAPEX"]                         
 
     ### ENERGY
     
     # Can exit if no energy records are provided
     if energy.empty: return result
     
-    total = get_total_energy(energy)
-    discounted = get_discounted_energy(energy, discount_rate)
+    energy_by_year = energy.set_index('project_year')
+    total = energy_by_year.sum()
+    discounted = get_discounted_values(energy, discount_rate)
             
     result["Energy"] = total
     result["Discounted Energy"] = discounted
