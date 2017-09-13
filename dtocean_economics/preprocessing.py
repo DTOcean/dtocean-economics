@@ -45,8 +45,11 @@ def estimate_energy(lifetime,
         
     energy_kw = [0] + [year_energy * net_coeff] * lifetime
     energy_year = range(lifetime + 1)
+    
+    raw_energy = {'energy': energy_kw,
+                  'project_year': energy_year}
 
-    energy_record = make_energy_record(energy_kw, energy_year)
+    energy_record = pd.DataFrame(raw_energy)
         
     return energy_record
 
@@ -55,8 +58,7 @@ def estimate_opex(lifetime,
                   total_rated_power=None,
                   opex_estimate=None,
                   annual_repair_cost_estimate=None,
-                  annual_array_mttf_estimate=None,
-                  phase=None):
+                  annual_array_mttf_estimate=None):
     
     # Note, units of mttf is hours
         
@@ -77,13 +79,12 @@ def estimate_opex(lifetime,
         annual_costs += failure_cost
         
     opex_unit_cost = [0.] + [annual_costs] * lifetime
-    opex_quantity = [1] * (lifetime + 1)
     opex_year = range(lifetime + 1)
     
-    opex_bom = make_phase_bom(opex_quantity,
-                              opex_unit_cost,
-                              opex_year,
-                              phase)
+    raw_costs = {'costs': opex_unit_cost,
+                 'project_year': opex_year}
+        
+    opex_bom = pd.DataFrame(raw_costs)
         
     return opex_bom
 
@@ -106,17 +107,3 @@ def make_phase_bom(quantities, costs, years, phase=None):
     phase_bom = pd.DataFrame(raw_costs)
     
     return phase_bom
-
-
-def make_energy_record(kws, years):
-    
-    if not (len(kws) == len(years)):
-        
-        errStr = "Number of energy values and project years must be equal"
-        raise ValueError(errStr)
-    
-    energy_raw = {'project_year': years,
-                  'energy': kws}
-    energy_record = pd.DataFrame(energy_raw)
-    
-    return energy_record
