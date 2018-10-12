@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016  Marta Silva, Mathew Topper
+#    Copyright (C) 2017-2018  Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,7 +17,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-
+.. moduleauthor:: Marta Silva <marta@wavec.org>
+.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
 import pandas as pd
