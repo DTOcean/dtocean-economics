@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2016  Marta Silva, Mathew Topper
+#    Copyright (C) 2017-2018  Mathew Topper
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@ Created on Tue Mar 17 16:06:59 2015
 
 Main economic analysis used within DTOcean tool
 
+.. moduleauthor:: Marta Silva <marta@wavec.org>
+.. moduleauthor:: Mathew Topper <mathew.topper@dataonlygreater.com>
 """
 
 from .functions import (costs_from_bom,
