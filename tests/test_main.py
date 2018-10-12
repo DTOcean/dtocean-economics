@@ -24,7 +24,6 @@ def test_main_no_capex(bom, opex_costs, energy_record):
     assert result["CAPEX breakdown"] is None
     assert result["CAPEX"] is None
     assert result["Discounted CAPEX"] is None
-    assert result["LCOE CAPEX"] is None
 
 
 def test_main_no_opex(bom, energy_record):
@@ -35,7 +34,6 @@ def test_main_no_opex(bom, energy_record):
     
     assert result["OPEX"] is None
     assert result["Discounted OPEX"] is None
-    assert result["LCOE OPEX"] is None
     
     
 def test_main_no_energy(bom, opex_costs, energy_record):
@@ -45,6 +43,3 @@ def test_main_no_energy(bom, opex_costs, energy_record):
     
     assert result["Energy"] is None
     assert result["Discounted Energy"] is None
-    assert result["LCOE CAPEX"] is None
-    assert result["LCOE OPEX"] is None
-    assert result["LCOE"] is None
