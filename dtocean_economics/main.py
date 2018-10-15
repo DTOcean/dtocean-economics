@@ -26,7 +26,9 @@ Main economic analysis used within DTOcean tool
 """
 
 from .functions import (costs_from_bom,
+                        get_combined_lcoe,
                         get_discounted_values,
+                        get_lcoe,
                         get_phase_breakdown,
                         get_total_cost)
 
@@ -43,7 +45,10 @@ def main(capex, opex, energy, discount_rate=0.):
               "OPEX": None,
               "Discounted OPEX": None,
               "Energy": None,
-              "Discounted Energy": None}
+              "Discounted Energy": None,
+              "LCOE CAPEX": None,  
+              "LCOE OPEX": None,
+              "LCOE": None}
    
     ### COSTS
         
@@ -70,7 +75,7 @@ def main(capex, opex, energy, discount_rate=0.):
             
         result["OPEX"] = total
         result["Discounted OPEX"] = discounted
-
+    
     ### ENERGY
     
     # Can exit if no energy records are provided
@@ -79,8 +84,32 @@ def main(capex, opex, energy, discount_rate=0.):
     energy_by_year = energy.set_index('project_year')
     total = energy_by_year.sum()
     discounted = get_discounted_values(energy, discount_rate)
-     
+            
     result["Energy"] = total
     result["Discounted Energy"] = discounted
+                
+    ### LCOE
+                                                        
+    if result["Discounted CAPEX"] is not None:
+        
+        lcoe = get_lcoe(result["Discounted CAPEX"],
+                        result["Discounted Energy"])
+        
+        result["LCOE CAPEX"] = lcoe
+                                           
+    if result["Discounted OPEX"] is not None:
+        
+        lcoe = get_lcoe(result["Discounted OPEX"],
+                        result["Discounted Energy"])
+        
+        result["LCOE OPEX"] = lcoe
+    
+    # Can exit if no LCOE values were created
+    if result["LCOE CAPEX"] is None and result["LCOE OPEX"] is None:
+        return result
+    
+    lcoe = get_combined_lcoe(result["LCOE CAPEX"], result["LCOE OPEX"])
+    
+    result["LCOE"] = lcoe
     
     return result

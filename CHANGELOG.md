@@ -19,9 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Reorganised the functions module to undertake all dataframe manipulation
   work. The main function just collects any valid results.
 - Now considers multiple series for energy and OPEX, as per changes in
-  the dtocean-maintenance module. Returns summed and discounted values for
-  each year in each series, but does not attempt LCOE calculation which is 
-  currently handled in the dtocean-core interface, using a statistical method.
+  the dtocean-maintenance module. Returns summed, discounted values and LCOE
+  calculations for each series.
 
 ## [1.0.0] - 2017-01-05
 
