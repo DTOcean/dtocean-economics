@@ -33,10 +33,11 @@ from .functions import (costs_from_bom,
                         get_total_cost)
 
 
-def main(capex, opex, energy, discount_rate=0.):
+def main(capex, opex, energy, discount_rate=None):
     
     # Note, nominal units of energy and costs are kWs and Euro
     # Year 0 represents costs prior to beginning of operations
+    if discount_rate is None: discount_rate = 0.
     
     # Define the results dictionary
     result = {"CAPEX": None,
