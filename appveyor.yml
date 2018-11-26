@@ -20,11 +20,11 @@ version: 1.1.dev0.build{build}
 environment:
   matrix:
     - PYTHON_VERSION: 2.7
-      MINICONDA: C:\Miniconda
+      MINICONDA: C:\Miniconda3
       ARCH: "32"
       
     - PYTHON_VERSION: 2.7
-      MINICONDA: C:\Miniconda-x64
+      MINICONDA: C:\Miniconda3-x64
       ARCH: "64"
 
 
