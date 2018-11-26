@@ -31,7 +31,6 @@ init:
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - conda config --set always_yes yes --set changeps1 no
-  - conda update --quiet conda
   - conda config --append channels conda-forge
   - conda config --append channels dataonlygreater
   - conda info --all
