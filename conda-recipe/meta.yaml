@@ -1,0 +1,57 @@
+package:
+  name: dtocean-economics
+  version: 1.0.0
+
+source:
+  # from git:
+  git_url: https://github.com/PokhodenkoSA/dtocean-economics.git
+  git_rev: feature/miniconda3
+
+build:
+#   entry_points:
+    # Put any entry points (scripts to be generated automatically) here. The
+    # syntax is module:function.  For example
+    #
+    # - appdirs:main
+    #
+    # Would call appdirs.main()
+
+  # If this is a new build for the same version, increment the build
+  # number. If you do not include this key, it defaults to 0.
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - numpy
+    - pandas
+
+test:
+  # Python imports
+  imports:
+    - dtocean_economics
+
+  # commands:
+    # You can put test commands to be run here.  Use this to test that the
+    # entry points work.
+
+  # You can also put a file called run_test.py in the recipe that will be run
+  # at test time.
+
+  # requires:
+    # Put any test requirements here.  For example
+    # - nose
+
+about:
+  home: https://github.com/DTOcean/dtocean-economics
+  license: GPLv3
+  license_file: LICENSE.txt
+  summary: Economics module for the DTOcean tools
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
