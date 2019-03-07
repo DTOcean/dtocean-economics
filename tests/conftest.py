@@ -39,11 +39,11 @@ def energy_record():
 @pytest.fixture(scope="module")
 def opex_costs():
     
-    energy_dict = {'project_year': [0, 1, 2, 3, 4, 5],
-                   'cost 0': [0.0, 100000.0, 100000.0, 1, 1, 1],
-                   'cost 1': [0.0, 100000.0, 0, 1, 1, 100000.0]
-                   }
+    opex_dict = {'project_year': [0, 1, 2, 3, 4, 5],
+                 'cost 0': [0.0, 100000.0, 100000.0, 1, 1, 1],
+                 'cost 1': [0.0, 100000.0, 0, 1, 1, 100000.0]
+                 }
     
-    energy_df = pd.DataFrame(energy_dict)
+    opex_df = pd.DataFrame(opex_dict)
     
-    return energy_df
+    return opex_df
