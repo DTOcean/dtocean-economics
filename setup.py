@@ -66,19 +66,16 @@ class CleanPyc(Command):
 
 
 setup(name='dtocean-economics',
-      version='1.1.dev0',
+      version='2.0.0',
       description='Economics module for the DTOcean tools',
-      author=('Mathew Topper, '
-              'Marta Silva'),
-      author_email=('damm_horse@yahoo.co.uk, '
-                    'marta@wavec.org'),
+      maintainer='Mathew Topper',
+      maintainer_email='mathew.topper@dataonlygreater.com',
       license="GPLv3",
       packages=find_packages(),
       install_requires=[
           'pandas'
       ],
       tests_require=[
-          'numpy',
           'pytest'
       ],
       cmdclass = {'test': PyTest,
