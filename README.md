@@ -1,6 +1,6 @@
 [![appveyor](https://ci.appveyor.com/api/projects/status/github/DTOcean/dtocean-economics?branch=master&svg=true)](https://ci.appveyor.com/project/DTOcean/dtocean-economics)
 [![codecov](https://codecov.io/gh/DTOcean/dtocean-economics/branch/master/graph/badge.svg)](https://codecov.io/gh/DTOcean/dtocean-economics)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb34506cc82f4df883178a6e64619eaf)](https://www.codacy.com/project/H0R5E/dtocean-economics/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DTOcean/dtocean-economics&amp;utm_campaign=Badge_Grade_Dashboard&amp;branchId=8410911)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c01d2d085de04db7960cecd72ca81dc9)](https://www.codacy.com/project/H0R5E/dtocean-economics/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DTOcean/dtocean-economics&amp;utm_campaign=Badge_Grade_Dashboard&amp;branchId=11720992)
 [![release](https://img.shields.io/github/release/DTOcean/dtocean-economics.svg)](https://github.com/DTOcean/dtocean-economics/releases/latest)
 
 # DTOcean Economics Module
